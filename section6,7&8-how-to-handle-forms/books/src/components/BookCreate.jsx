@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
-import { useContext, useState } from "react";
-import BooksContext from "../context/books";
+import { useState } from "react";
+import useBooksContext from "../hooks/use-book-context";
 
 const BookCreate = () => {
   const [title, setTitle] = useState("");
-  const { createBook } = useContext(BooksContext);
+  const { createBook } = useBooksContext();
 
   const handleChange = (e) => setTitle(e.target.value);
 
