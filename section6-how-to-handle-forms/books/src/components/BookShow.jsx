@@ -1,12 +1,33 @@
 /* eslint-disable react/prop-types */
-const BookShow = ({ book, onDelete }) => {
-  const handleClick = () => onDelete(book.id);
+import { useState } from "react";
+import BookEdit from "./BookEdit";
+
+const BookShow = ({ book, onDelete, onEdit }) => {
+  const [showEdit, setShowEdit] = useState(false);
+
+  const handleEditClick = () => {
+    setShowEdit(!showEdit);
+  };
+
+  const handleDeleteClick = () => onDelete(book.id);
+
+  const handleSubmit = (id, newTitle) => {
+    setShowEdit(false);
+    onEdit(id, newTitle);
+  };
 
   return (
     <div className="book-show">
-      {book.title}
+      {showEdit ? (
+        <BookEdit book={book} onEdit={onEdit} onSubmit={handleSubmit} />
+      ) : (
+        book.title
+      )}
       <div className="actions">
-        <button className="delete" onClick={handleClick}>
+        <div className="edit" onClick={handleEditClick}>
+          Edit
+        </div>
+        <button className="delete" onClick={handleDeleteClick}>
           Delete
         </button>
       </div>
