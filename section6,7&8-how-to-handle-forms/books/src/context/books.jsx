@@ -1,10 +1,10 @@
-import "./App.css";
-import { useState, useEffect } from "react";
-import BookCreate from "./components/BookCreate";
-import BookList from "./components/BookList";
+/* eslint-disable react/prop-types */
+import { createContext, useState } from "react";
 import axios from "axios";
 
-function App() {
+const BooksContext = createContext();
+
+function Provider({ children }) {
   const [books, setBooks] = useState([]);
 
   const fetchBooks = async () => {
@@ -12,10 +12,6 @@ function App() {
 
     setBooks(response.data);
   };
-
-  useEffect(() => {
-    fetchBooks();
-  }, []);
 
   const createBook = async (title) => {
     const response = await axios.post("http://localhost:3001/books", {
@@ -48,12 +44,14 @@ function App() {
   };
 
   return (
-    <div className="app">
-      <h1>Reading List</h1>
-      <BookList books={books} onDelete={deleteBookById} onEdit={editBookById} />
-      <BookCreate onCreate={createBook} />
-    </div>
+    <BooksContext.Provider
+      value={{ books, fetchBooks, createBook, deleteBookById, editBookById }}
+    >
+      {children}
+    </BooksContext.Provider>
   );
 }
 
-export default App;
+export { Provider };
+
+export default BooksContext;

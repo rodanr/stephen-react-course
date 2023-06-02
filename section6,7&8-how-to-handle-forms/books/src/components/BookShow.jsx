@@ -1,29 +1,26 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useContext, useState } from "react";
 import BookEdit from "./BookEdit";
+import BooksContext from "../context/books";
 
-const BookShow = ({ book, onDelete, onEdit }) => {
+const BookShow = ({ book }) => {
   const [showEdit, setShowEdit] = useState(false);
+  const { deleteBookById } = useContext(BooksContext);
 
   const handleEditClick = () => {
     setShowEdit(!showEdit);
   };
 
-  const handleDeleteClick = () => onDelete(book.id);
+  const handleDeleteClick = () => deleteBookById(book.id);
 
-  const handleSubmit = (id, newTitle) => {
+  const handleSubmit = () => {
     setShowEdit(false);
-    onEdit(id, newTitle);
   };
 
   return (
     <div className="book-show">
       <img src={`https://picsum.photos/seed/${book.id}/300/200`} alt="books" />
-      {showEdit ? (
-        <BookEdit book={book} onEdit={onEdit} onSubmit={handleSubmit} />
-      ) : (
-        book.title
-      )}
+      {showEdit ? <BookEdit book={book} onSubmit={handleSubmit} /> : book.title}
       <div className="actions">
         <div className="edit" onClick={handleEditClick}>
           Edit
