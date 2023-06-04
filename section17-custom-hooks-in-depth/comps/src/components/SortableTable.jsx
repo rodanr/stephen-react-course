@@ -28,6 +28,7 @@ const SortableTable = (props) => {
       case "desc":
         setSortOrder(null);
         setSortBy(null);
+        break;
     }
   };
 
@@ -63,7 +64,7 @@ const SortableTable = (props) => {
         >
           <div className="flex items-center">
             {getIcons(column.label, sortBy, sortOrder)}
-            {column.label} IS SORTABLE
+            {column.label}
           </div>
         </th>
       ),
