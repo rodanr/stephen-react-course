@@ -7,35 +7,79 @@
  * useful when future state values depend on the current state
  */
 
-import { useState } from "react";
+import { useReducer } from "react";
 import Button from "../components/Button";
 import Panel from "../components/Panel";
 
+const ACTION_TYPE = {
+  INCREMENT_COUNT: "increment",
+  DECREMENT_COUNT: "decrement",
+  SET_VALUE_TO_ADD: "change-value-to-add",
+  ADD_VALUE_TO_COUNT: "add-value-to-count",
+};
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case ACTION_TYPE.INCREMENT_COUNT:
+      return {
+        ...state,
+        count: state.count + 1,
+      };
+
+    case ACTION_TYPE.DECREMENT_COUNT:
+      return {
+        ...state,
+        count: state.count - 1,
+      };
+
+    case ACTION_TYPE.SET_VALUE_TO_ADD:
+      return {
+        ...state,
+        valueToAdd: action.payload,
+      };
+
+    case ACTION_TYPE.ADD_VALUE_TO_COUNT:
+      return {
+        ...state,
+        count: state.count + state.valueToAdd,
+        valueToAdd: 0,
+      };
+
+    default:
+      // throw new Error(`Unexpected Action Type: ${action.type}`);
+      return state;
+  }
+};
+
 const CounterPage = ({ initialCount }) => {
-  const [count, setCount] = useState(initialCount);
-  const [valueToAdd, setValueToAdd] = useState(0);
+  const [state, dispatch] = useReducer(reducer, {
+    count: initialCount,
+    valueToAdd: 0,
+  });
 
   const increment = () => {
-    setCount((prevCount) => prevCount + 1);
+    dispatch({ type: ACTION_TYPE.INCREMENT_COUNT });
   };
 
   const decrement = () => {
-    setCount((prevCount) => prevCount - 1);
+    dispatch({ type: ACTION_TYPE.DECREMENT_COUNT });
   };
 
   const handleChange = (e) => {
-    setValueToAdd(parseInt(e.target.value));
+    dispatch({
+      type: ACTION_TYPE.SET_VALUE_TO_ADD,
+      payload: parseInt(e.target.value),
+    });
   };
 
-  const onSubmit = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    setCount((prevCount) => prevCount + valueToAdd);
-    setValueToAdd(0);
+    dispatch({ type: ACTION_TYPE.ADD_VALUE_TO_COUNT });
   };
 
   return (
     <Panel className="m-3">
-      <h1 className="text-lg m-3">Count is {count}</h1>
+      <h1 className="text-lg m-3">Count is {state.count}</h1>
       <div className="flex flex-row">
         <Button className="bg-green-300 m-3" onClick={increment}>
           Increment
@@ -45,10 +89,10 @@ const CounterPage = ({ initialCount }) => {
         </Button>
       </div>
 
-      <form onSubmit={onSubmit}>
+      <form onSubmit={handleSubmit}>
         <label>Add a lot!</label>
         <input
-          value={valueToAdd || ""}
+          value={state.valueToAdd || ""}
           onChange={handleChange}
           type="number"
           className="p-1 m-3 bg-gray-50 border border-gray-300"
