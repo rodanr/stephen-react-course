@@ -1,4 +1,12 @@
 /* eslint-disable react/prop-types */
+/**
+ * Notes on using useReducer (use useState whenever a state is necessary)
+ *
+ * useReducer is used when two or more than two states are used in the component
+ * useful when you have different closely related pieces of state
+ * useful when future state values depend on the current state
+ */
+
 import { useState } from "react";
 import Button from "../components/Button";
 import Panel from "../components/Panel";
